@@ -1,17 +1,25 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber"
+
+	auth "github.com/cckwes/shoplist/auth"
 )
 
 func main() {
-	r := gin.Default()
+	app := fiber.New()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "Hello"})
+	app.Use(auth.JwtMiddleware)
+
+	app.Get("/", func(context *fiber.Ctx) {
+		userEmail := context.Locals("user").(map[string]string)["email"]
+
+		context.JSON(&fiber.Map{
+			"message": fmt.Sprintf("hello %v", userEmail),
+		})
 	})
 
-	r.Run()
+	app.Listen(3000)
 }
