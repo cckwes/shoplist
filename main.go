@@ -4,18 +4,18 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 	auth "github.com/cckwes/shoplist/auth"
+	database "github.com/cckwes/shoplist/db"
 )
 
 func main() {
-	db, err := gorm.Open("sqlite3", "data.db")
+	err := database.Open()
 	if err != nil {
 		panic("Failed to connect to databasae")
 	}
-	defer db.Close()
+	defer database.Close()
 
 	app := fiber.New()
 
