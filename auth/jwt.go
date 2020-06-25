@@ -12,6 +12,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
+
+	service "github.com/cckwes/shoplist/services"
 )
 
 func JwtMiddleware(context *fiber.Ctx) {
@@ -42,9 +44,14 @@ func JwtMiddleware(context *fiber.Ctx) {
 		return
 	}
 
-	context.Locals("user", map[string]string{
-		"email": email,
-	})
+	user, err := service.GetOrCreateUser(email)
+	if err != nil {
+		log.Println("Fail to create or get user, error", err)
+		context.Status(403)
+		return
+	}
+
+	context.Locals("user", user)
 	context.Next()
 }
 

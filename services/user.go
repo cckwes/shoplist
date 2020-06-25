@@ -5,8 +5,9 @@ import (
 	"github.com/cckwes/shoplist/models"
 )
 
-func CreateUser(email string) {
-	var user models.User
-	user.Email = email
-	db.DB.Create(user)
+func GetOrCreateUser(email string) (models.User, error) {
+	user := models.User{}
+	err := db.DB.FirstOrCreate(&user, models.User{Email: email}).Error
+
+	return user, err
 }
