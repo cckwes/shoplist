@@ -1,15 +1,27 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/gofiber/cors"
 	"github.com/gofiber/fiber"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
-	auth "github.com/cckwes/shoplist/auth"
+	"github.com/cckwes/shoplist/auth"
+	"github.com/cckwes/shoplist/controllers"
 	"github.com/cckwes/shoplist/db"
 	"github.com/cckwes/shoplist/models"
 )
+
+func setupRoutes(app *fiber.App) {
+	api := app.Group("/v1")
+
+	api.Get("/lists", controllers.GetLists)
+	api.Post("/lists", controllers.CreateList)
+	api.Put("/lists/:ID", controllers.UpdateList)
+	api.Get("/lists/:ID/items", controllers.GetItemsInList)
+
+	api.Post("/items", controllers.CreateItem)
+	api.Put("/items/:ID", controllers.UpdateItem)
+}
 
 func main() {
 	err := db.Open()
@@ -18,21 +30,17 @@ func main() {
 	}
 	defer db.Close()
 
-	// db.DB.LogMode(true)
+	db.DB.LogMode(true)
 	db.DB.AutoMigrate(&models.User{})
+	db.DB.AutoMigrate(&models.List{})
 	db.DB.AutoMigrate(&models.Item{})
 
 	app := fiber.New()
 
+	app.Use(cors.New())
 	app.Use(auth.JwtMiddleware)
 
-	app.Get("/", func(context *fiber.Ctx) {
-		userEmail := context.Locals("user").(models.User).Email
-
-		context.JSON(&fiber.Map{
-			"message": fmt.Sprintf("hello %v", userEmail),
-		})
-	})
+	setupRoutes(app)
 
 	app.Listen(3000)
 }
