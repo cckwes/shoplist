@@ -23,7 +23,7 @@ func setupRoutes(app *fiber.App) {
 	api.Put("/items/:ID", controllers.UpdateItem)
 }
 
-func main() {
+func newApp() *fiber.App {
 	err := db.Open()
 	if err != nil {
 		panic("Failed to connect to databasae")
@@ -41,6 +41,12 @@ func main() {
 	app.Use(auth.JwtMiddleware)
 
 	setupRoutes(app)
+
+	return app
+}
+
+func main() {
+	app := newApp()
 
 	app.Listen(3000)
 }
