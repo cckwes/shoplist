@@ -12,5 +12,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/steinfletcher/apitest v1.4.8
 	github.com/steinfletcher/apitest-jsonpath v1.5.1
+	github.com/stretchr/testify v1.6.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 )

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gofiber/fiber"
 	"github.com/jinzhu/gorm"
@@ -35,8 +36,15 @@ func CreateList(c *fiber.Ctx) {
 		return
 	}
 
+	name := strings.TrimSpace(input.Name)
+	if len(name) == 0 {
+		log.Println("Received invalid name for create list")
+		c.Status(400)
+		return
+	}
+
 	var list models.List
-	list.Name = input.Name
+	list.Name = name
 	list.UserID = uid
 	err := services.InsertList(&list)
 
