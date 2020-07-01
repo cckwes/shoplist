@@ -14,11 +14,15 @@ type CreateListInput struct {
 	Name string `json:"name"`
 }
 
+type Lists struct {
+	Lists []models.List `json:"lists"`
+}
+
 func GetLists(c *fiber.Ctx) {
 	id := c.Locals("user").(models.User).ID
 
-	items := services.FindListsByUserID(id)
-	c.JSON(items)
+	lists := services.FindListsByUserID(id)
+	c.JSON(Lists{Lists: lists})
 }
 
 func CreateList(c *fiber.Ctx) {
