@@ -2,9 +2,9 @@ package tests
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
+	"github.com/franela/goblin"
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 
@@ -13,39 +13,45 @@ import (
 	"github.com/cckwes/shoplist/services"
 )
 
-func TestMain(m *testing.M) {
-	SetupTests()
-	code := m.Run()
-	TearDownTests()
-	os.Exit(code)
-}
+func TestGetList(t *testing.T) {
+	g := goblin.Goblin(t)
+	g.Describe("GET /v1/lists", func() {
+		g.Before(func() {
+			SetupTests()
+		})
 
-func TestGetList_EmptyList(t *testing.T) {
-	ClearDB()
-	CreateFixtures()
+		g.After(func() {
+			TearDownTests()
+		})
 
-	apitest.New().
-		HandlerFunc(FiberToHandler(server.NewApp())).
-		Get("/v1/lists").
-		Header("Authorization", Bearer).
-		Expect(t).
-		Assert(jsonpath.Len(`$.lists`, 0)).
-		Status(http.StatusOK).
-		End()
-}
+		g.BeforeEach(func() {
+			ClearDB()
+			CreateFixtures()
+		})
 
-func TestGetList_NonEmptyList(t *testing.T) {
-	ClearDB()
-	CreateFixtures()
-	var list = models.List{Name: "default", UserID: UserId}
-	services.InsertList(&list)
+		g.It("should return empty list", func() {
+			apitest.New().
+				HandlerFunc(FiberToHandler(server.NewApp())).
+				Get("/v1/lists").
+				Header("Authorization", Bearer).
+				Expect(t).
+				Assert(jsonpath.Len(`$.lists`, 0)).
+				Status(http.StatusOK).
+				End()
+		})
 
-	apitest.New().
-		HandlerFunc(FiberToHandler(server.NewApp())).
-		Get("/v1/lists").
-		Header("Authorization", Bearer).
-		Expect(t).
-		Assert(jsonpath.Len(`$.lists`, 1)).
-		Status(http.StatusOK).
-		End()
+		g.It("should return non empty list", func() {
+			var list = models.List{Name: "default", UserID: UserId}
+			services.InsertList(&list)
+
+			apitest.New().
+				HandlerFunc(FiberToHandler(server.NewApp())).
+				Get("/v1/lists").
+				Header("Authorization", Bearer).
+				Expect(t).
+				Assert(jsonpath.Len(`$.lists`, 1)).
+				Status(http.StatusOK).
+				End()
+		})
+	})
 }
