@@ -12,10 +12,13 @@ import (
 )
 
 const Bearer string = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20ifQ.o88lC_FoBgf5Ke5IgezBPPHvBQ0n5jAsnm932jxPSMI"
+const Bearer2 string = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbCI6InRlc3QyQGV4YW1wbGUuY29tIn0.ZPlIU_AuF81AgchYWxoj9s3r2OXi8e_i8-wrp1JVLkc"
 
 const email string = "test@example.com"
+const email2 string = "test2@example.com"
 
 var UserId string = ""
+var UserId2 string = ""
 
 func FiberToHandler(app *fiber.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +47,12 @@ func CreateFixtures() {
 		panic("Failed to setup fixture")
 	}
 	UserId = user.ID
+
+	user2, err := services.GetOrCreateUser(email2)
+	if err != nil {
+		panic("Failed to setup fixture")
+	}
+	UserId2 = user2.ID
 }
 
 func ClearDB() {

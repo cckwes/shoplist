@@ -15,7 +15,7 @@ func FindListsByUserID(userID string) []models.List {
 
 func GetListByID(id string) (models.List, error) {
 	var list models.List
-	err := db.DB.Where("id = ?", id).First(&list).Error
+	err := db.DB.Preload("Items").First(&list).Where("id = ?", id).Error
 
 	return list, err
 }

@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -75,6 +76,45 @@ func TestGetList(t *testing.T) {
 			})
 		})
 
+		g.Describe("GET /v1/lists/:ID", func() {
+			g.It("should return 400 if list is not found", func() {
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Get("/v1/lists/xxxx-yyyy").
+					Header("Authorization", Bearer).
+					Expect(t).
+					Status(http.StatusBadRequest).
+					End()
+			})
+
+			g.It("should return 403 if trying to access list of other user", func() {
+				var list = models.List{Name: "default", UserID: UserId}
+				services.InsertList(&list)
+
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Get(fmt.Sprintf("/v1/lists/%v", list.ID)).
+					Header("Authorization", Bearer2).
+					Expect(t).
+					Status(http.StatusForbidden).
+					End()
+			})
+
+			g.It("should be able to get list with valid ID", func() {
+				var list = models.List{Name: "default", UserID: UserId}
+				services.InsertList(&list)
+
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Get(fmt.Sprintf("/v1/lists/%v", list.ID)).
+					Header("Authorization", Bearer).
+					Expect(t).
+					Assert(jsonpath.Equal(`$.name`, list.Name)).
+					Status(http.StatusOK).
+					End()
+			})
+		})
+
 		g.Describe("POST /v1/lists", func() {
 			g.It("should return 400 for invalid input", func() {
 				apitest.New().
@@ -113,6 +153,51 @@ func TestGetList(t *testing.T) {
 
 				lists := services.FindListsByUserID(UserId)
 				assert.Equal(t, "party night", lists[0].Name)
+			})
+		})
+
+		g.Describe("PUT /v1/lists/:ID", func() {
+			g.It("should return 400 if list is not found", func() {
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Put("/v1/lists/xxxx-yyyy").
+					Header("Authorization", Bearer).
+					Header("Content-type", "application/json").
+					Body(`{"name": "groceries"}`).
+					Expect(t).
+					Status(http.StatusBadRequest).
+					End()
+			})
+
+			g.It("should return 403 if trying to update list that's not belongs to the user", func() {
+				var list = models.List{Name: "default", UserID: UserId}
+				services.InsertList(&list)
+
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Put(fmt.Sprintf("/v1/lists/%v", list.ID)).
+					Header("Authorization", Bearer2).
+					Header("Content-type", "application/json").
+					Body(`{"name": "groceries"}`).
+					Expect(t).
+					Status(http.StatusForbidden).
+					End()
+			})
+
+			g.It("should be able to update list", func() {
+				var list = models.List{Name: "default", UserID: UserId}
+				services.InsertList(&list)
+
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Put(fmt.Sprintf("/v1/lists/%v", list.ID)).
+					Header("Authorization", Bearer).
+					Header("Content-type", "application/json").
+					Body(`{"name": "groceries"}`).
+					Expect(t).
+					Assert(jsonpath.Equal(`$.name`, "groceries")).
+					Status(http.StatusOK).
+					End()
 			})
 		})
 	})

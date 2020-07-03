@@ -11,9 +11,9 @@ func setupRoutes(app *fiber.App) {
 	api := app.Group("/v1")
 
 	api.Get("/lists", controllers.GetLists)
+	api.Get("/lists/:ID", controllers.GetList)
 	api.Post("/lists", controllers.CreateList)
 	api.Put("/lists/:ID", controllers.UpdateList)
-	api.Get("/lists/:ID/items", controllers.GetItemsInList)
 
 	api.Post("/items", controllers.CreateItem)
 	api.Put("/items/:ID", controllers.UpdateItem)

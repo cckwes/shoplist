@@ -73,7 +73,7 @@ func UpdateList(c *fiber.Ctx) {
 		return
 	}
 	if l.UserID != uid {
-		log.Panicln("Trying to update a list that's not belongs to the user")
+		log.Println("Trying to update a list that's not belongs to the user")
 		c.Status(403)
 		return
 	}
@@ -104,11 +104,11 @@ func UpdateList(c *fiber.Ctx) {
 	c.JSON(updatedList)
 }
 
-func GetItemsInList(c *fiber.Ctx) {
+func GetList(c *fiber.Ctx) {
 	uid := c.Locals("user").(models.User).ID
 	id := c.Params("ID")
 
-	l, err := services.GetListByID(id)
+	list, err := services.GetListByID(id)
 	if err != nil {
 		log.Println("Error when getting list ", err)
 
@@ -119,18 +119,11 @@ func GetItemsInList(c *fiber.Ctx) {
 		}
 		return
 	}
-	if l.UserID != uid {
-		log.Panicln("Trying to get items in a list that's not belongs to the user")
+	if list.UserID != uid {
+		log.Println("Trying to get items in a list that's not belongs to the user")
 		c.Status(403)
 		return
 	}
 
-	items, err := services.GetItemsByListID(id)
-	if err != nil {
-		log.Println("Error when getting items in list ", err)
-		c.Status(500)
-		return
-	}
-
-	c.JSON(items)
+	c.JSON(list)
 }
