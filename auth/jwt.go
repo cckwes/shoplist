@@ -1,4 +1,4 @@
-package jwt
+package auth
 
 import (
 	"encoding/json"
@@ -17,7 +17,6 @@ import (
 )
 
 func JwtMiddleware(context *fiber.Ctx) {
-	log.Println("In JwtMiddleware")
 	auth := context.Get(fiber.HeaderAuthorization)
 	authContent := strings.Split(auth, " ")
 
@@ -28,7 +27,6 @@ func JwtMiddleware(context *fiber.Ctx) {
 	}
 
 	token := authContent[1]
-	log.Println("token: ", token)
 
 	jwtToken, err := jwt.Parse(token, getKey())
 	if err != nil {

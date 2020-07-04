@@ -6,7 +6,6 @@ import (
 
 type User struct {
 	Base
-	Name     string
-	Email    string
-	ShopList []Item
+	Email string `json:"email"`
+	Lists []List `json:"lists"`
 }
