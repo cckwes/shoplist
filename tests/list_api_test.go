@@ -15,8 +15,9 @@ import (
 	"github.com/cckwes/shoplist/services"
 )
 
-func TestGetList(t *testing.T) {
+func TestListAPI(t *testing.T) {
 	g := goblin.Goblin(t)
+
 	g.Describe("List APIs", func() {
 		g.Before(func() {
 			SetupTests()
@@ -87,7 +88,7 @@ func TestGetList(t *testing.T) {
 					End()
 			})
 
-			g.It("should return 403 if trying to access list of other user", func() {
+			g.It("should return 400 if trying to access list of other user", func() {
 				var list = models.List{Name: "default", UserID: UserId}
 				services.InsertList(&list)
 
@@ -96,7 +97,7 @@ func TestGetList(t *testing.T) {
 					Get(fmt.Sprintf("/v1/lists/%v", list.ID)).
 					Header("Authorization", Bearer2).
 					Expect(t).
-					Status(http.StatusForbidden).
+					Status(http.StatusBadRequest).
 					End()
 			})
 
@@ -169,7 +170,7 @@ func TestGetList(t *testing.T) {
 					End()
 			})
 
-			g.It("should return 403 if trying to update list that's not belongs to the user", func() {
+			g.It("should return 400 if trying to update list that's not belongs to the user", func() {
 				var list = models.List{Name: "default", UserID: UserId}
 				services.InsertList(&list)
 
@@ -180,7 +181,7 @@ func TestGetList(t *testing.T) {
 					Header("Content-type", "application/json").
 					Body(`{"name": "groceries"}`).
 					Expect(t).
-					Status(http.StatusForbidden).
+					Status(http.StatusBadRequest).
 					End()
 			})
 

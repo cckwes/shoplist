@@ -31,7 +31,7 @@ func CreateList(c *fiber.Ctx) {
 
 	var input CreateListInput
 	if err := c.BodyParser(&input); err != nil {
-		log.Println("Unable to parse input ", err)
+		log.Println("Unable to parse input", err)
 		c.Status(400)
 		return
 	}
@@ -49,7 +49,7 @@ func CreateList(c *fiber.Ctx) {
 	err := services.InsertList(&list)
 
 	if err != nil {
-		log.Println("Failed to create list ", err)
+		log.Println("Failed to create list", err)
 		c.Status(500)
 		return
 	}
@@ -63,7 +63,7 @@ func UpdateList(c *fiber.Ctx) {
 
 	l, err := services.GetListByID(id)
 	if err != nil {
-		log.Println("Error when getting list ", err)
+		log.Println("Error when getting list", err)
 
 		if err == gorm.ErrRecordNotFound {
 			c.Status(400)
@@ -74,13 +74,13 @@ func UpdateList(c *fiber.Ctx) {
 	}
 	if l.UserID != uid {
 		log.Println("Trying to update a list that's not belongs to the user")
-		c.Status(403)
+		c.Status(400)
 		return
 	}
 
 	var input CreateListInput
 	if err := c.BodyParser(&input); err != nil {
-		log.Println("Unable to parse input ", err)
+		log.Println("Unable to parse input", err)
 		c.Status(400)
 		return
 	}
@@ -96,7 +96,7 @@ func UpdateList(c *fiber.Ctx) {
 			return
 		}
 
-		log.Println("Failed to update list ", err)
+		log.Println("Failed to update list", err)
 		c.Status(500)
 		return
 	}
@@ -110,7 +110,7 @@ func GetList(c *fiber.Ctx) {
 
 	list, err := services.GetListByID(id)
 	if err != nil {
-		log.Println("Error when getting list ", err)
+		log.Println("Error when getting list", err)
 
 		if err == gorm.ErrRecordNotFound {
 			c.Status(400)
@@ -121,7 +121,7 @@ func GetList(c *fiber.Ctx) {
 	}
 	if list.UserID != uid {
 		log.Println("Trying to get items in a list that's not belongs to the user")
-		c.Status(403)
+		c.Status(400)
 		return
 	}
 
