@@ -12,7 +12,9 @@ import (
 )
 
 type CreateListInput struct {
-	Name string `json:"name"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Color       string `json:"color"`
 }
 
 type Lists struct {
@@ -45,6 +47,8 @@ func CreateList(c *fiber.Ctx) {
 
 	var list models.List
 	list.Name = name
+	list.Description = input.Description
+	list.Color = input.Color
 	list.UserID = uid
 	err := services.InsertList(&list)
 
@@ -87,6 +91,8 @@ func UpdateList(c *fiber.Ctx) {
 
 	var list models.List
 	list.Name = input.Name
+	list.Description = input.Description
+	list.Color = input.Color
 	list.ID = id
 	updatedList, err := services.UpdateList(list)
 
