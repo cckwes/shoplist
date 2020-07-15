@@ -26,7 +26,7 @@ func InsertList(list *models.List) error {
 }
 
 func UpdateList(list models.List) (models.List, error) {
-	if err := db.DB.Model(list).Where("id = ?", list.ID).Update("name", list.Name).Error; err != nil {
+	if err := db.DB.Model(list).Where("id = ?", list.ID).Updates(list).Error; err != nil {
 		return models.List{}, err
 	}
 	return GetListByID(list.ID)
