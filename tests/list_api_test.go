@@ -162,7 +162,7 @@ func TestListAPI(t *testing.T) {
 					Post("/v1/lists").
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"name": "Christmas", "description": "Materials needed for Christmas 2019 celeb", "color": "0xff0000"}`).
+					Body(`{"name": "Christmas", "description": "Materials needed for Christmas 2019 celeb", "color": 16711680}`).
 					Expect(t).
 					Status(http.StatusOK).
 					End()
@@ -170,7 +170,7 @@ func TestListAPI(t *testing.T) {
 				lists := services.FindListsByUserID(UserId)
 				assert.Equal(t, "Christmas", lists[0].Name)
 				assert.Equal(t, "Materials needed for Christmas 2019 celeb", lists[0].Description)
-				assert.Equal(t, "0xff0000", lists[0].Color)
+				assert.Equal(t, int32(16711680), lists[0].Color)
 			})
 		})
 
@@ -211,7 +211,7 @@ func TestListAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/lists/%v", list.ID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"name": "groceries", "description": "daily needs", "color": "0xffff00"}`).
+					Body(`{"name": "groceries", "description": "daily needs", "color": 16711680}`).
 					Expect(t).
 					Assert(jsonpath.Equal(`$.name`, "groceries")).
 					Status(http.StatusOK).
@@ -220,7 +220,7 @@ func TestListAPI(t *testing.T) {
 				lists := services.FindListsByUserID(UserId)
 				assert.Equal(t, "groceries", lists[0].Name)
 				assert.Equal(t, "daily needs", lists[0].Description)
-				assert.Equal(t, "0xffff00", lists[0].Color)
+				assert.Equal(t, int32(16711680), lists[0].Color)
 			})
 		})
 	})
