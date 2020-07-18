@@ -14,7 +14,7 @@ import (
 type CreateListInput struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Color       string `json:"color"`
+	Color       int32  `json:"color"`
 }
 
 type Lists struct {
