@@ -170,7 +170,7 @@ func TestListAPI(t *testing.T) {
 				lists := services.FindListsByUserID(UserId)
 				assert.Equal(t, "Christmas", lists[0].Name)
 				assert.Equal(t, "Materials needed for Christmas 2019 celeb", lists[0].Description)
-				assert.Equal(t, int32(16711680), lists[0].Color)
+				assert.Equal(t, uint32(16711680), lists[0].Color)
 			})
 		})
 
@@ -220,7 +220,7 @@ func TestListAPI(t *testing.T) {
 				lists := services.FindListsByUserID(UserId)
 				assert.Equal(t, "groceries", lists[0].Name)
 				assert.Equal(t, "daily needs", lists[0].Description)
-				assert.Equal(t, int32(16711680), lists[0].Color)
+				assert.Equal(t, uint32(16711680), lists[0].Color)
 			})
 		})
 	})
