@@ -166,6 +166,38 @@ func TestItemAPI(t *testing.T) {
 					End()
 			})
 
+			g.It("should be able to mark item as done", func() {
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Put(fmt.Sprintf("/v1/items/%v", itemID)).
+					Header("Authorization", Bearer).
+					Header("Content-type", "application/json").
+					Body(`{"done": true}`).
+					Expect(t).
+					Assert(jsonpath.Equal(`$.name`, "Egg")).
+					Assert(jsonpath.Equal(`$.count`, float64(2))).
+					Assert(jsonpath.Equal(`$.done`, true)).
+					Assert(jsonpath.Equal(`$.removed`, false)).
+					Status(http.StatusOK).
+					End()
+			})
+
+			g.It("should be able to mark item as removed", func() {
+				apitest.New().
+					HandlerFunc(FiberToHandler(server.NewApp())).
+					Put(fmt.Sprintf("/v1/items/%v", itemID)).
+					Header("Authorization", Bearer).
+					Header("Content-type", "application/json").
+					Body(`{"removed": true}`).
+					Expect(t).
+					Assert(jsonpath.Equal(`$.name`, "Egg")).
+					Assert(jsonpath.Equal(`$.count`, float64(2))).
+					Assert(jsonpath.Equal(`$.done`, false)).
+					Assert(jsonpath.Equal(`$.removed`, true)).
+					Status(http.StatusOK).
+					End()
+			})
+
 			g.It("should be able to update item name and count", func() {
 				apitest.New().
 					HandlerFunc(FiberToHandler(server.NewApp())).
