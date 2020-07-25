@@ -17,6 +17,13 @@ type CreateItemInput struct {
 	ListID string `json:"list_id"`
 }
 
+type UpdateItemInput struct {
+	Name    string `json:"name"`
+	Count   uint   `json:"count"`
+	Done    bool   `json:"done"`
+	Removed bool   `json:"removed"`
+}
+
 func CreateItem(c *fiber.Ctx) {
 	uid := c.Locals("user").(models.User).ID
 
@@ -73,7 +80,7 @@ func UpdateItem(c *fiber.Ctx) {
 	uid := c.Locals("user").(models.User).ID
 	id := c.Params("ID")
 
-	var input CreateItemInput
+	var input UpdateItemInput
 	if err := c.BodyParser(&input); err != nil {
 		log.Println("Unable to parse input", err)
 		c.Status(400)
@@ -113,7 +120,7 @@ func UpdateItem(c *fiber.Ctx) {
 		return
 	}
 
-	var item = models.Item{Name: name, Count: input.Count}
+	var item = models.Item{Name: name, Count: input.Count, Done: input.Done, Removed: input.Removed}
 	item.ID = id
 
 	updatedItem, err := services.UpdateItem(item)
