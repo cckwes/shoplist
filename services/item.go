@@ -25,7 +25,7 @@ func GetItemsByListID(listID string) ([]models.Item, error) {
 }
 
 func UpdateItem(item models.Item) (models.Item, error) {
-	if err := db.DB.Model(item).Where("id = ?", item.ID).Updates(item).Error; err != nil {
+	if err := db.DB.Model(item).Where("id = ?", item.ID).Updates(map[string]interface{}{"name": item.Name, "count": item.Count, "done": item.Done, "removed": item.Removed}).Error; err != nil {
 		return models.Item{}, err
 	}
 

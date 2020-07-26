@@ -108,7 +108,7 @@ func TestItemAPI(t *testing.T) {
 				var list = models.List{Name: "default", UserID: UserId}
 				services.InsertList(&list)
 
-				var item = models.Item{Name: "Egg", Count: 2, ListID: list.ID}
+				var item = models.Item{Name: "Egg", Count: 2, ListID: list.ID, Done: true, Removed: false}
 				services.InsertItem(&item)
 				itemID = item.ID
 			})
@@ -119,10 +119,9 @@ func TestItemAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"count": 0}`).
+					Body(`{"name": "Egg", "count": 0, "done": false, "removed": false}`).
 					Expect(t).
-					Assert(jsonpath.Equal(`$.count`, float64(2))).
-					Status(http.StatusOK).
+					Status(http.StatusBadRequest).
 					End()
 			})
 
@@ -132,7 +131,7 @@ func TestItemAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer2).
 					Header("Content-type", "application/json").
-					Body(`{"count": 1}`).
+					Body(`{"name": "Egg", "count": 1, "done": false, "removed": false}`).
 					Expect(t).
 					Status(http.StatusBadRequest).
 					End()
@@ -144,7 +143,7 @@ func TestItemAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"name": "Bread"}`).
+					Body(`{"name": "Bread", "count": 2, "done": false, "removed": false}`).
 					Expect(t).
 					Assert(jsonpath.Equal(`$.name`, "Bread")).
 					Assert(jsonpath.Equal(`$.count`, float64(2))).
@@ -158,7 +157,7 @@ func TestItemAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"count": 1}`).
+					Body(`{"name": "Egg", "count": 1, "done": false, "removed": false}`).
 					Expect(t).
 					Assert(jsonpath.Equal(`$.name`, "Egg")).
 					Assert(jsonpath.Equal(`$.count`, float64(1))).
@@ -166,17 +165,17 @@ func TestItemAPI(t *testing.T) {
 					End()
 			})
 
-			g.It("should be able to mark item as done", func() {
+			g.It("should be able to mark item as undone", func() {
 				apitest.New().
 					HandlerFunc(FiberToHandler(server.NewApp())).
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"done": true}`).
+					Body(`{"name": "Egg", "count": 2, "done": false, "removed": false}`).
 					Expect(t).
 					Assert(jsonpath.Equal(`$.name`, "Egg")).
 					Assert(jsonpath.Equal(`$.count`, float64(2))).
-					Assert(jsonpath.Equal(`$.done`, true)).
+					Assert(jsonpath.Equal(`$.done`, false)).
 					Assert(jsonpath.Equal(`$.removed`, false)).
 					Status(http.StatusOK).
 					End()
@@ -188,7 +187,7 @@ func TestItemAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"removed": true}`).
+					Body(`{"name": "Egg", "count": 2, "done": false, "removed": true}`).
 					Expect(t).
 					Assert(jsonpath.Equal(`$.name`, "Egg")).
 					Assert(jsonpath.Equal(`$.count`, float64(2))).
@@ -204,7 +203,7 @@ func TestItemAPI(t *testing.T) {
 					Put(fmt.Sprintf("/v1/items/%v", itemID)).
 					Header("Authorization", Bearer).
 					Header("Content-type", "application/json").
-					Body(`{"name": "Bread", "count": 1}`).
+					Body(`{"name": "Bread", "count": 1, "done": false, "removed": true}`).
 					Expect(t).
 					Assert(jsonpath.Equal(`$.name`, "Bread")).
 					Assert(jsonpath.Equal(`$.count`, float64(1))).
