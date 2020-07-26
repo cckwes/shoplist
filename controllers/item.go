@@ -88,8 +88,8 @@ func UpdateItem(c *fiber.Ctx) {
 	}
 
 	name := strings.TrimSpace(input.Name)
-	if input.Count < 0 {
-		log.Println("Receive count less than zero")
+	if input.Count <= 0 {
+		log.Println("Receive count less than or equal to zero")
 		c.Status(400)
 		return
 	}
