@@ -17,4 +17,6 @@ FROM debian:stretch
 WORKDIR /app
 COPY --from=builder /app/shoplist .
 
+EXPOSE 3000
+
 ENTRYPOINT ["/app/shoplist"]
