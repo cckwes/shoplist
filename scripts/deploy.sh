@@ -9,4 +9,5 @@ docker run --name shoplist-container \
     -e APP_ENV=production \
     -e SQLITE_FILE=/db/data.sqlite \
     -v /db:/db \
+    -p 3000:3000 \
     -d cckwes/shoplist:latest
