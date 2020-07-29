@@ -11,7 +11,7 @@ var DB *gorm.DB
 
 func Open() error {
 	var err error
-	DB, err = gorm.Open("sqlite3", "data.db")
+	DB, err = gorm.Open("sqlite3", getDatabaseFile())
 	return err
 }
 
@@ -22,7 +22,7 @@ func Close() error {
 func getDatabaseFile() string {
 	databaseFile := os.Getenv("SQLITE_FILE")
 
-	if len(databaseFile) < 0 {
+	if len(databaseFile) <= 0 {
 		return "data.db"
 	} else {
 		return databaseFile
