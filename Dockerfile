@@ -15,6 +15,7 @@ RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o shoplist .
 FROM debian:stretch
 
 WORKDIR /app
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/shoplist .
 
 EXPOSE 3000
