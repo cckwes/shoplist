@@ -6,7 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/franela/goblin v0.0.0-20200611003024-99f9a98191cf
 	github.com/gofiber/cors v0.2.0
-	github.com/gofiber/fiber v1.12.0
+	github.com/gofiber/fiber v1.12.6
 	github.com/jinzhu/gorm v1.9.14
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/satori/go.uuid v1.2.0
